@@ -1,31 +1,27 @@
-import { getFeaturedEvents } from "../dummy-data";
 import EventsList from "../components/events/EventsList";
-import fs from "fs";
-import Link from "next/link";
-import path from "path";
+import { getFeaturedEvents } from "../helpers/api-utils";
 
-const HomePage = () => {
-  const featuredEvents = getFeaturedEvents();
+const HomePage = ({ events }) => {
+  if (!events) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
       <ul>
-        <EventsList items={featuredEvents} />
+        <EventsList items={events} />
       </ul>
     </div>
   );
 };
 
 export const getStaticProps = async () => {
-  console.log("re generating....");
-  const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
-  const jsonData = await fs.readFileSync(filePath);
-  const data = JSON.parse(jsonData);
+  const featuredEvents = await getFeaturedEvents();
   return {
     props: {
-      products: data?.products,
+      events: featuredEvents,
+      revalidate: 1800,
     },
-    revalidate: 10,
   };
 };
 
