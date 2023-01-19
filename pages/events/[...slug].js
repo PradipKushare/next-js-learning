@@ -3,6 +3,7 @@ import EventsList from "../../components/events/EventsList";
 import { Fragment } from "react";
 import Button from "../../components/ui/Button";
 import { getFilteredEvents } from "../../helpers/api-utils";
+import Head from "next/head";
 
 const FilteredEventPage = ({ hasError, events, date }) => {
   // const router = useRouter();
@@ -32,6 +33,13 @@ const FilteredEventPage = ({ hasError, events, date }) => {
 
   return (
     <Fragment>
+      <Head>
+        <title>Filtered Events</title>
+        <meta
+          name="description"
+          content={`All events for ${date.year}/${date.month}`}
+        />
+      </Head>
       <EventsList items={filteredEvents} />
     </Fragment>
   );
