@@ -16,6 +16,11 @@ export const getAllEvents = async () => {
   return events;
 };
 
+export const submitFeedbackPost = (email, feedback) => {
+  console.log({ email, feedback });
+  return axios.post("/api/feedback", { email, feedback });
+};
+
 export const getFeaturedEvents = async () => {
   const allEvents = await getAllEvents();
   return allEvents.filter((event) => event.isFeatured);

@@ -1,36 +1,41 @@
-import Head from "next/head";
-import EventsList from "../components/events/EventsList";
-import { getFeaturedEvents } from "../helpers/api-utils";
+import { useRef } from "react";
+import { submitFeedbackPost } from "../helpers/api-utils";
 
-const HomePage = ({ events }) => {
-  if (!events) {
-    return <p>Loading...</p>;
-  }
+const HomePage = () => {
+  const emailInputRef = useRef("");
+  const feedbackInputRef = useRef("");
+
+  const submitFeedback = async (event) => {
+    event.preventDefault();
+    const email = emailInputRef.current.value;
+    const feedback = feedbackInputRef.current.value;
+
+    await submitFeedbackPost(email, feedback)
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
-    <div>
-      <Head>
-        <title>NextJS Event</title>
-        <meta
-          name="description"
-          content="find a lot of great event that allow you to evolve..."
-        />
-      </Head>
-      <ul>
-        <EventsList items={events} />
-      </ul>
+    <div className="container">
+      <div className="row">
+        <form onSubmit={submitFeedback}>
+          <div className="col-md-6">
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email" ref={emailInputRef} />
+          </div>
+          <div className="col-md-6">
+            <label htmlFor="feedback">your Feedback</label>
+            <textarea rows={5} id="feedback" ref={feedbackInputRef}></textarea>
+          </div>
+          <button type="submit">Send Feedback</button>
+        </form>
+      </div>
     </div>
   );
-};
-
-export const getStaticProps = async () => {
-  const featuredEvents = await getFeaturedEvents();
-  return {
-    props: {
-      events: featuredEvents,
-      revalidate: 1800,
-    },
-  };
 };
 
 export default HomePage;
